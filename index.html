@@ -2,56 +2,48 @@
 <html lang="en">
 <head>
   <!-- Non Nobis Solum G + Seven 2026 -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G. De Beer</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>G. De Beer</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-    <!-- SECTION 1 — HERO VISUAL -->
-    <section id="hero">
-        <canvas id="particles"></canvas>
+  <!-- SECTION 1 — HERO VISUAL -->
+  <section id="hero" class="reveal" aria-label="Hero">
+    <canvas id="particles"></canvas>
+    <div class="hero-text">
+      <span class="small-tag">ON IT, G!! 🦉⚡</span>
+    </div>
+  </section>
 
-        <div class="hero-text fade-in">
-            <span class="small-tag">ON IT, G!! 🦉⚡</span>
-        </div>
-    </section>
+  <!-- SECTION 2 — IDENTITY -->
+  <section id="identity" class="reveal id-wrap" aria-label="Identity">
+    <!-- Hairline rule (decorative) -->
+    <div class="id-rule" aria-hidden="true"></div>
 
+    <h1 class="id-name" aria-label="G. De Beer">
+      <span class="id-word">G.</span>
+      <span class="id-word">De</span>
+      <span class="id-word">Beer</span>
+    </h1>
 
-<!-- SECTION 2 — IDENTITY -->
-<section id="identity" class="reveal id-wrap" aria-label="Identity">
-  <!-- Hairline rule (decorative) -->
-  <div class="id-rule" aria-hidden="true"></div>
+    <p class="id-line">
+      Building sovereign systems for clarity,<br>
+      movement, and intelligent operations.
+    </p>
+  </section>
 
-  <h1 class="id-name" aria-label="G. De Beer">
-    <span class="id-word">G.</span>
-    <span class="id-word">De</span>
-    <span class="id-word">Beer</span>
-  </h1>
+  <!-- SECTION 3 — EXCLUSIVITY -->
+  <section id="exclusive" class="reveal" aria-label="Access">
+    <h2>BY INVITATION ONLY</h2>
+    <div class="footer-note">Built with LLMs &amp; Gerry</div>
+  </section>
 
-  <p class="id-line">
-    Building sovereign systems for clarity,<br>
-    movement, and intelligent operations.
-  </p>
-</section>
-
-
-    <!-- SECTION 3 — EXCLUSIVITY -->
-    <section id="exclusive" class="fade-in">
-        <h2>BY INVITATION ONLY</h2>
-
-        <p class="signature">
-            Warm regards,<br>
-            Gerry
-        </p>
-
-        <div class="footer-note">
-            Built with LLMs &amp; Gerry
-        </div>
-    </section>
-
-    <script src="particles.js"></script>
+  <!-- JS (load after the DOM elements exist) -->
+  <script src="particles.js"></script>
 </body>
 </html>
