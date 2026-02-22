@@ -22,12 +22,10 @@ const LINE_SILVER = 'rgba(192,194,197,0.18)';  // faint link lines in hold
 const canvas = document.getElementById('particles');
 const ctx = canvas ? canvas.getContext('2d') : null;
 
-// Guard if canvas missing
 if (!canvas || !ctx) {
   console.warn('[particles.js] #particles canvas not found.');
 }
 
-/* ---------- Resizing ---------- */
 function resize() {
   if (!canvas) return;
   canvas.width  = window.innerWidth;
@@ -61,19 +59,15 @@ class Particle {
   step() {
     if (!canvas) return;
     if (this.state === 'morph' && this.target) {
-      // gently ease toward target
       const dx = this.target.x - this.x;
       const dy = this.target.y - this.y;
       this.x += dx * 0.15;
       this.y += dy * 0.15;
-      // damp drift while morphing
       this.vx *= 0.9; this.vy *= 0.9;
     } else if (this.state === 'hold') {
-      // tiny jitter to avoid dead static feel
       this.x += (Math.random() - 0.5) * 0.1;
       this.y += (Math.random() - 0.5) * 0.1;
     } else {
-      // idle drift
       this.x += this.vx;
       this.y += this.vy * speedFactor;
       if (this.y < -2) { this.y = canvas.height + 2; this.x = Math.random() * canvas.width; }
@@ -88,7 +82,6 @@ class Particle {
   }
 }
 
-// particle count scales mildly with viewport size
 const PARTICLE_COUNT = (() => {
   if (!canvas) return 80;
   const base = Math.round((canvas.width * canvas.height) / 40000) + 40;
@@ -104,8 +97,6 @@ function buildTargets() {
   if (!canvas) return;
   const w = canvas.width, h = canvas.height;
   if (w === 0 || h === 0) return;
-
-  // avoid rebuilding on identical size
   if (targetBuiltFor.w === w && targetBuiltFor.h === h && targets.length) return;
   targetBuiltFor = { w, h };
 
@@ -115,7 +106,7 @@ function buildTargets() {
 
   octx.clearRect(0, 0, w, h);
 
-  // Phrase, centered above middle
+  // Phrase centered above middle
   const phrase = 'ON IT, G!! 🦉⚡';
   const baseY  = Math.max(h * 0.38, 140);
   octx.fillStyle = '#E6E8EA';
@@ -178,11 +169,9 @@ function buildTargets() {
     }
   }
 
-  // Cap for performance
   targets = shuffle(pts).slice(0, MAX_TARGET_POINTS);
 }
 
-// simple shuffle
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -203,7 +192,6 @@ function assignTargets() {
     particles[i].target = targets[i];
     particles[i].state  = 'morph';
   }
-  // others remain idle; that asymmetry looks natural
 }
 function setHold() {
   particles.forEach(p => {
@@ -214,7 +202,6 @@ function releaseTargets() {
   particles.forEach(p => {
     p.state  = 'idle';
     p.target = null;
-    // nudge
     p.vx = (Math.random() - 0.5) * 0.15;
     p.vy = -(Math.random() * (BASE_SPEED_MAX - BASE_SPEED_MIN) + BASE_SPEED_MIN);
   });
@@ -228,7 +215,6 @@ function draw() {
 
   particles.forEach(p => { p.step(); p.draw(ctx); });
 
-  // If in hold: draw faint lines to hint "constellation"
   if (phase === 'hold') {
     ctx.strokeStyle = LINE_SILVER;
     ctx.lineWidth = 1;
@@ -251,7 +237,7 @@ requestAnimationFrame(draw);
 /* ---------- Phase timeline ---------- */
 function tick(ts) {
   if (!lastTs) lastTs = ts;
-  const dt = ts - lastTs; // ms since last
+  const dt = ts - lastTs;
   lastTs   = ts;
 
   phaseTimer += dt;
@@ -298,11 +284,8 @@ let targetSpeed = 1.0;
 function onScroll(){
   const currentY = window.scrollY;
   const delta = currentY - lastScrollY;
-
-  // Downwards = slightly faster, upwards = slightly slower (clamped)
   const directionBoost = Math.max(-0.2, Math.min(0.4, delta * 0.0015));
   targetSpeed = 1.0 + directionBoost;
-
   lastScrollY = currentY;
 }
 window.addEventListener('scroll', onScroll, { passive: true });
@@ -313,14 +296,13 @@ function easeSpeed(){
 }
 easeSpeed();
 
-/* ---------- Hero text micro‑parallax (optional) ---------- */
+/* ---------- Hero text micro‑parallax ---------- */
 const heroText = document.querySelector('.hero-text');
 let lastRAF = 0;
 function parallaxTick(ts){
   if (ts - lastRAF > 16){
     if (heroText){
       const y = window.scrollY;
-      // max ±8px drift—tasteful and subtle
       const offset = Math.max(-8, Math.min(8, y * 0.02));
       heroText.style.transform = `translateY(${offset}px)`;
     }
