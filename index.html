@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>G. De Beer</title>
 
-  <!-- Fonts: switch to Space Grotesk (modern, crisp) + Inter fallback -->
-  https://fonts.googleapis.com
-  https://fonts.gstatic.com
-  https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap
+  <!-- Fonts: Space Grotesk (modern, crisp) + system fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     /* =========================
@@ -67,7 +67,7 @@
       color: var(--text-strong);
       cursor: default;
     }
-    /* Hover-grow (desktop); subtle change on tap will still feel right on mobile) */
+    /* Hover-grow (desktop); on mobile, press still feels fine */
     @media (hover:hover){
       .access-label:hover{
         transform: scale(1.07);
