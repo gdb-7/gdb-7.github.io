@@ -1,169 +1,203 @@
-/* THEME (UBS-inspired) */
+/* =========================
+   Gerry Palette + Base
+   ========================= */
 :root{
-  --bg: #0F1115;       /* deep, sophisticated background */
-  --navy: #1E3044;     /* deep navy */
-  --silver: #C0C0C0;   /* silver accent */
-  --ink: #E6E8EA;      /* soft light ink (not pure white) */
-  --muted: #9CA3AF;    /* neutral for subtle text */
+  --ink: #0F1115;          /* optional dark */
+  --navy: #1E3044;         /* deep navy – background anchor */
+  --silver: #C0C0C0;       /* UI silver */
+  --soft-gray: #A7B0BA;    /* muted accents */
+  --metal: #CFA77D;        /* optional warm metallic */
+
+  /* Text colors derived from palette (avoid pure white) */
+  --text-strong: #E4E8ED;  /* high-contrast off-white on navy */
+  --text-soft: #BFC7D1;    /* softer secondary text */
+
+  /* Type scale & rhythm */
+  --lh-display-tight: 1.15;
+  --lh-display: 1.25;
+  --lh-text: 1.6;
+
+  /* Layout */
+  --page-min: 100vh;
+  --content-max: 60ch;
+  --pad-hero: clamp(2rem, 4vw, 6rem);
+  --pad-page: clamp(2rem, 5vw, 7rem);
+  --transition: 600ms cubic-bezier(.25,.1,.25,1);
+
+  /* Line-field (Option C) */
+  --lines-color: rgba(192,192,192,0.08); /* very subtle silver */
+  --lines-gap: 12px;                      /* spacing between lines */
+  --lines-width: 1px;
+  --lines-shift: 20px;                    /* pixels per cycle */
+  --lines-duration: 18s;                  /* slow 'breathing' */
 }
 
+/* Base reset-lite */
 *{ box-sizing: border-box; }
-html, body{ height: 100%; }
-
+html,body{ height:100%; }
 body{
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-               Helvetica, Arial, sans-serif;
-  scroll-behavior: smooth;
-  text-rendering: optimizeLegibility;
+  margin:0;
+  background: var(--navy);
+  color: var(--text-strong);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  line-height: var(--lh-text);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Sections */
-section{
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 80px 20px;
+/* Section scaffold */
+.page{
   position: relative;
+  min-height: var(--page-min);
+  display: grid;
+  place-items: center;
+  padding: var(--pad-page);
 }
 
-/* Reveal-on-scroll */
-.reveal{
-  opacity: 0;
-  transform: translateY(14px);
+/* =========================
+   PAGE 1 — LANDING
+   ========================= */
+.page--landing{
+  background: var(--navy);
+}
+
+.landing__stage{
+  position: relative;
+  width: min(92vw, 1200px);
+  display: grid;
+  place-items: center;
+}
+
+/* Large display type for the two frames */
+.landing__frame{
+  font-family: "EB Garamond", Georgia, serif;
+  text-align: center;
+  letter-spacing: 0.01em;
+  will-change: opacity, transform;
   transition: opacity 700ms ease, transform 700ms ease;
 }
-.reveal.reveal-in{
-  opacity: 1;
-  transform: translateY(0);
+
+.landing__frame--seven{
+  font-size: clamp(5rem, 14vw, 16rem);
+  line-height: 1.1;                    /* large numerals look best tighter */
+  opacity: 0;
+  transform: translateY(8px);
 }
 
-/* HERO */
-#hero{
-  position: relative;
-  overflow: hidden;
-  background: radial-gradient(1200px 600px at 50% 20%, rgba(30,48,68,0.45), transparent 60%),
-              linear-gradient(180deg, rgba(30,48,68,0.10), transparent 40%);
+.landing__frame--onit{
+  font-size: clamp(2rem, 6vw, 6rem);
+  line-height: var(--lh-display-tight);
+  opacity: 0;
+  transform: translateY(8px);
 }
-#particles{
+
+/* Subtle scroll cue (optional, tiny) */
+.scroll-cue{
+  position: absolute;
+  left: 50%; bottom: clamp(1.2rem, 3vh, 2.5rem);
+  width: 2px; height: 36px;
+  background: linear-gradient(to bottom, rgba(228,232,237,.0), rgba(228,232,237,.7));
+  transform: translateX(-50%);
+  border-radius: 999px;
+  opacity: .5;
+}
+
+/* Reduced-motion: show ON IT frame immediately, no choreography */
+.reduced-motion .landing__frame--onit{ opacity: 1; transform: none; }
+.reduced-motion .landing__frame--seven{ display: none; }
+
+/* =========================
+   PAGE 2 — HERO (line field)
+   ========================= */
+.page--hero{
+  overflow: hidden;
+}
+
+/* Line-field background (Option C) */
+.hero__bg{
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--lines-color) 0,
+      var(--lines-color) var(--lines-width),
+      transparent var(--lines-width),
+      transparent var(--lines-gap)
+    );
+  animation: lineShift var(--lines-duration) linear infinite;
 }
-.hero-text{
+
+@keyframes lineShift{
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-1 * var(--lines-shift))); }
+}
+
+/* Freeze for users preferring reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .hero__bg{ animation: none; }
+}
+
+.hero__content{
   position: relative;
-  z-index: 10;
-  font-size: 0.95rem;
-  letter-spacing: 1.4px;
-  color: var(--silver);
-  opacity: 0.7;
-  transform: translateY(0);
-  transition: transform 120ms linear;
-}
-
-/* IDENTITY */
-.id-wrap{
-  padding-top: clamp(72px, 12vh, 120px);
-  padding-bottom: clamp(72px, 12vh, 120px);
-}
-
-.id-rule{
-  width: clamp(120px, 18vw, 240px);
-  height: 1px;
-  margin: 0 auto clamp(28px, 5vh, 48px) auto;
-  background: linear-gradient(90deg, rgba(192,192,192,0), rgba(192,192,192,0.22), rgba(192,192,192,0));
-}
-
-.id-name{
-  margin: 0 0 clamp(18px, 3vh, 28px) 0;
-  font-weight: 600;
-  font-size: clamp(2.4rem, 6vw, 4.0rem);
-  letter-spacing: -0.02em;
-  color: var(--ink);
-  line-height: 1.05;
-}
-
-.id-name .id-word{
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(12px);
-  will-change: transform, opacity;
-}
-
-.id-line{
-  margin: 0;
-  font-weight: 300;
-  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
-  line-height: 1.36;
+  z-index: 1;
+  width: min(92vw, var(--content-max));
   text-align: center;
-  color: var(--ink);
-  max-width: 760px;
-  opacity: 0;
-  transform: translateY(12px);
-  will-change: transform, opacity;
 }
 
-/* Staggered entrance */
-.id-wrap.reveal-in .id-name .id-word{
-  opacity: 1;
-  transform: translateY(0);
-  transition: transform 520ms cubic-bezier(.2,.8,.2,1), opacity 520ms ease;
-}
-.id-wrap.reveal-in .id-name .id-word:nth-child(1){ transition-delay: 40ms; }
-.id-wrap.reveal-in .id-name .id-word:nth-child(2){ transition-delay: 120ms; }
-.id-wrap.reveal-in .id-name .id-word:nth-child(3){ transition-delay: 200ms; }
-
-.id-wrap.reveal-in .id-line{
-  opacity: 1;
-  transform: translateY(0);
-  transition: transform 560ms cubic-bezier(.2,.8,.2,1) 240ms,
-              opacity 560ms ease 240ms;
+.hero__line{
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: clamp(1.25rem, 2.2vw, 2.2rem);
+  line-height: var(--lh-display);     /* generous, as requested */
+  margin: 0;
+  letter-spacing: 0.01em;
 }
 
-/* EXCLUSIVITY */
-#exclusive h2{
-  font-size: 1.05rem;
-  letter-spacing: 6px;
-  text-transform: uppercase;
-  opacity: 0.65;
-  color: var(--silver);
-  margin: 0 0 40px 0;
-  transition: letter-spacing 140ms ease, opacity 140ms ease;
+/* =========================
+   PAGE 3 — ACCESS
+   ========================= */
+.access__wrap{
+  width: min(92vw, var(--content-max));
+  text-align: center;
+}
+
+.access__label{
+  display: inline-block;
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  line-height: var(--lh-display);
+  color: var(--text-strong);
+  margin: 0;
+  transform: translateZ(0);
+  transition: transform 350ms ease, letter-spacing 350ms ease, color 350ms ease;
+  letter-spacing: 0.02em;
   cursor: default;
 }
-#exclusive h2:hover{
-  letter-spacing: 7.5px;
-  opacity: 0.7;
+
+/* Elegant hover-grow */
+.access__label:hover{
+  transform: scale(1.075);
+  letter-spacing: 0.04em;
+  color: var(--silver);
 }
 
-.footer-note{
-  color: var(--muted);
-  opacity: 0.5;
-  font-size: 0.92rem;
-  letter-spacing: 0.06em;
+/* Footer spacing and style */
+.site-footer{
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: clamp(1.2rem, 3vh, 2rem) 1rem;
+  text-align: center;
+  color: var(--soft-gray);
+  font-size: 0.95rem;
 }
 
-/* Small screens */
-@media (max-width: 520px){
-  #identity h1{ font-size: 2.4rem; }
-  #identity p{ font-size: 1.25rem; }
+.footer__sig{
+  margin: 0;
 }
 
-/* Motion safety */
-@media (prefers-reduced-motion: reduce){
-  .id-name .id-word,
-  .id-line{
-    transform: none !important;
-    transition: none !important;
-  }
-  .id-wrap .id-name,
-  .id-wrap .id-line{
-    transition: none !important;
-  }
+/* =========================
+   Responsive niceties
+   ========================= */
+@media (max-width: 420px){
+  .hero__line{ letter-spacing: 0; }
 }
