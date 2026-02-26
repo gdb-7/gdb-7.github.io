@@ -21,7 +21,7 @@
       --text-muted:  #7A8899;
       --silver:      #B8C4CC;
       --accent:      #4A6580;
-      --lh-title:    1.25;
+      --lh-title:    1.28;
       --lh-text:     1.65;
     }
 
@@ -42,7 +42,8 @@
     }
 
     /* ==============================================
-       MICRO-TEXTURE — instrument-panel depth
+       MICRO-TEXTURE — pure CSS, no SVG data URI
+       CSS gradient noise — Safari safe, no privacy flags
        ============================================== */
     body::before {
       content: "";
@@ -50,24 +51,41 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-      background-repeat: repeat;
-      background-size: 300px 300px;
+      opacity: 0.018;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(228, 232, 237, 0.08) 2px,
+          rgba(228, 232, 237, 0.08) 3px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 4px,
+          rgba(228, 232, 237, 0.04) 4px,
+          rgba(228, 232, 237, 0.04) 5px
+        );
     }
 
-    /* Radial vignette */
+    /* Radial vignette — premium depth */
     body::after {
       content: "";
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(ellipse 120% 100% at 50% 0%, transparent 40%, rgba(14, 20, 28, 0.45) 100%);
+      background: radial-gradient(
+        ellipse 130% 110% at 50% 10%,
+        transparent 35%,
+        rgba(12, 18, 26, 0.55) 100%
+      );
     }
 
     /* ==============================================
        PAGE SECTIONS
-       100dvh — respects mobile browser chrome
+       100dvh — respects mobile Safari browser chrome
        ============================================== */
     .page {
       min-height: 100vh;
@@ -76,19 +94,19 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 6vw, 4rem);
+      padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 7vw, 5rem);
       position: relative;
       z-index: 1;
     }
 
     .wrap {
-      width: min(88vw, 52ch);
+      width: min(86vw, 50ch);
       text-align: center;
     }
 
     /* ==============================================
        PAGE 1 — HERO
-       Everything starts invisible — JS reveals in sequence
+       All elements start invisible. JS orchestrates.
        ============================================== */
 
     /* Signal pulse — horizontal, centered */
@@ -102,40 +120,24 @@
       background: linear-gradient(
         to right,
         transparent,
-        rgba(184, 196, 204, 0.55),
+        rgba(184, 196, 204, 0.5),
         transparent
       );
       opacity: 0;
       pointer-events: none;
     }
 
-    /* Identity line — hidden at load */
+    /* Identity line — Cormorant Garamond — sovereign */
     .hero-line {
       font-family: "Cormorant Garamond", Georgia, serif;
       font-weight: 500;
-      font-size: clamp(1.5rem, 4.5vw, 2.75rem);
+      font-size: clamp(1.6rem, 4.8vw, 2.9rem);
       line-height: var(--lh-title);
-      letter-spacing: 0.015em;
+      letter-spacing: 0.012em;
       color: var(--text-strong);
       opacity: 0;
-    }
-
-    /* State switch — absolutely positioned, hidden at load */
-    .state-switch {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(88vw, 52ch);
-      text-align: center;
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-weight: 500;
-      font-size: clamp(1.5rem, 4.5vw, 2.75rem);
-      line-height: var(--lh-title);
-      letter-spacing: 0.015em;
-      color: var(--text-strong);
-      opacity: 0;
-      pointer-events: none;
+      cursor: default;
+      /* pointer-events managed by JS for double-tap replay */
     }
 
     /* Micro state marker — hidden until awake */
@@ -144,7 +146,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      margin-top: 2rem;
+      margin-top: 2.25rem;
       opacity: 0;
     }
 
@@ -153,57 +155,73 @@
       height: 4px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 5px rgba(74, 101, 128, 0.5);
+      box-shadow: 0 0 5px rgba(74, 101, 128, 0.45);
     }
 
     .state-marker__bar {
-      width: 24px;
+      width: 22px;
       height: 1px;
       background: var(--accent);
-      opacity: 0.65;
+      opacity: 0.6;
     }
 
     .state-marker__label {
       font-family: "Space Grotesk", sans-serif;
-      font-size: 0.58rem;
+      font-size: 0.57rem;
       font-weight: 400;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--text-muted);
     }
+
+    /* Breathing pulse — resting human rhythm, ~4s cycle */
+    @keyframes breathe {
+      0%, 100% { opacity: 0.3;  box-shadow: 0 0 3px rgba(74, 101, 128, 0.25); }
+      50%       { opacity: 1.0; box-shadow: 0 0 9px rgba(74, 101, 128, 0.7);  }
+    }
+
+    @keyframes breathe-label {
+      0%, 100% { opacity: 0.3; }
+      50%       { opacity: 1.0; }
+    }
+
+    .state-marker__dot   { animation: breathe       4s ease-in-out infinite; }
+    .state-marker__label { animation: breathe-label 4s ease-in-out infinite; }
 
     /* ==============================================
        PAGE 2 — ACCESS GATE
        ============================================== */
+
+    /* By Invitation Only — authoritative, subordinate to identity */
     .access-label {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(0.85rem, 2.2vw, 1.2rem);
-      font-weight: 300;
-      letter-spacing: 0.14em;
+      font-size: clamp(1rem, 2.8vw, 1.55rem);
+      font-weight: 400;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--silver);
       cursor: default;
-      transition: letter-spacing 400ms ease, color 400ms ease;
+      transition: letter-spacing 500ms ease, color 500ms ease;
     }
 
     @media (hover: hover) {
       .access-label:hover {
-        letter-spacing: 0.2em;
-        color: var(--silver);
+        letter-spacing: 0.22em;
+        color: var(--text-strong);
       }
     }
 
-    /* Footer — anchored bottom of page 2 */
+    /* Footer — lifted, breathing room beneath */
     .site-footer {
       position: absolute;
       left: 0;
       right: 0;
-      bottom: clamp(1.25rem, 4vh, 2rem);
+      bottom: clamp(2.5rem, 6vh, 3.5rem);
       text-align: center;
       color: var(--text-muted);
       font-size: 0.78rem;
       font-weight: 300;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
 
     .site-footer p { margin: 0; }
@@ -212,47 +230,16 @@
        AWAKENING — CSS ANIMATIONS
        ============================================== */
 
-    /* Pulse: expands, fades out */
+    /* Signal pulse: expands width, fades out */
     @keyframes pulse-expand {
       0%   { width: 0;     opacity: 0;   }
-      25%  { width: 120px; opacity: 0.9; }
-      65%  { width: 260px; opacity: 0.5; }
-      100% { width: 340px; opacity: 0;   }
+      20%  { width: 100px; opacity: 0.8; }
+      60%  { width: 280px; opacity: 0.4; }
+      100% { width: 380px; opacity: 0;   }
     }
 
     .pulse-active {
-      animation: pulse-expand 800ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-
-    /* Breathing pulse — resting human rhythm ~4s cycle */
-    @keyframes breathe {
-      0%, 100% { opacity: 0.35; box-shadow: 0 0 3px rgba(74, 101, 128, 0.3); }
-      50%       { opacity: 1;    box-shadow: 0 0 8px rgba(74, 101, 128, 0.7); }
-    }
-
-    @keyframes breathe-label {
-      0%, 100% { opacity: 0.35; }
-      50%       { opacity: 1;    }
-    }
-
-    .state-marker__dot {
-      animation: breathe 4s ease-in-out infinite;
-    }
-
-    .state-marker__label {
-      animation: breathe-label 4s ease-in-out infinite;
-    }
-
-    /* State switch: fades in, holds, fades out */
-    @keyframes state-switch-anim {
-      0%   { opacity: 0; }
-      15%  { opacity: 1; }
-      75%  { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    .state-switch-visible {
-      animation: state-switch-anim 1500ms ease forwards;
+      animation: pulse-expand 1400ms cubic-bezier(0.25, 0, 0.4, 1) forwards;
     }
 
   </style>
@@ -263,14 +250,12 @@
 
   <!-- ============================================
        SECTION 1 — IDENTITY / AWAKENING
+       Double-tap the identity line to replay the awakening.
        ============================================ -->
   <section class="page page--hero" id="hero">
 
     <!-- Signal pulse -->
     <div class="signal-pulse" id="signalPulse" aria-hidden="true"></div>
-
-    <!-- State switch — appears once during awakening -->
-    <div class="state-switch" id="stateSwitch" aria-hidden="true">"ON IT, G!! 🦉⚡️"</div>
 
     <!-- Identity — permanent post-awakening -->
     <div class="wrap">
@@ -278,7 +263,7 @@
         Building sovereign systems for clarity, movement, and intelligent operations.
       </h1>
 
-      <!-- Micro state marker — Option B -->
+      <!-- Micro state marker — Option B — breathes at rest -->
       <div class="state-marker" id="stateMarker" aria-hidden="true">
         <div class="state-marker__bar"></div>
         <div class="state-marker__dot"></div>
@@ -305,70 +290,96 @@
 
   <!-- ============================================
        AWAKENING SEQUENCE
-       Runs once per session via sessionStorage.
+       Orchestrated entirely via JS inline style transitions.
+       No sessionStorage — sequence runs on every fresh page load.
+       Scroll-back shows static awake state (no replay on scroll).
+
        Timeline:
-         0.0s  Dormant — all invisible
-         0.6s  Signal pulse fires
-         1.6s  Identity fades in (900ms)
-         2.8s  Identity fades out (400ms), state switch fires after 380ms gap
-         4.4s  State switch ends, identity returns + marker appears
+         0.0s  — Dormant. All invisible.
+         0.8s  — Signal pulse fires (1400ms duration)
+         2.6s  — Identity fades in slowly (1200ms)
+         5.0s  — Dust settles. Silence.
+         6.2s  — ONLINE marker breathes into existence (1000ms)
+
+       Double-tap on identity line replays the full sequence.
+       For the one who looks closer.
        ============================================ -->
   <script>
     (function () {
       "use strict";
 
-      var SESSION_KEY  = "gdb7_awake";
-      var alreadyAwake = sessionStorage.getItem(SESSION_KEY);
+      var pulse   = document.getElementById("signalPulse");
+      var hero    = document.getElementById("heroLine");
+      var marker  = document.getElementById("stateMarker");
 
-      var pulse    = document.getElementById("signalPulse");
-      var heroLine = document.getElementById("heroLine");
-      var stateSw  = document.getElementById("stateSwitch");
-      var marker   = document.getElementById("stateMarker");
+      var isAwake   = false;  /* tracks whether sequence has completed */
+      var isRunning = false;  /* prevents overlapping replays */
 
-      /* Final awake state — identity visible, marker visible */
-      function markAwake() {
-        heroLine.style.transition = "opacity 700ms ease";
-        heroLine.style.opacity    = "1";
-        marker.style.transition   = "opacity 900ms ease";
-        marker.style.opacity      = "1";
-        sessionStorage.setItem(SESSION_KEY, "1");
+      /* Reset all elements to dormant state */
+      function dormant() {
+        pulse.classList.remove("pulse-active");
+        /* Force reflow so animation can restart */
+        void pulse.offsetWidth;
+        hero.style.transition  = "none";
+        hero.style.opacity     = "0";
+        marker.style.transition = "none";
+        marker.style.opacity    = "0";
       }
 
-      /* Return visit — skip sequence, snap to awake state */
-      if (alreadyAwake) {
-        heroLine.style.opacity = "1";
-        marker.style.opacity   = "1";
-        return;
+      /* Final awake state */
+      function awake() {
+        hero.style.transition   = "opacity 700ms ease";
+        hero.style.opacity      = "1";
+        marker.style.transition = "opacity 1000ms ease";
+        marker.style.opacity    = "1";
+        isAwake   = true;
+        isRunning = false;
       }
 
-      /* ---- FIRST VISIT: AWAKENING SEQUENCE ---- */
+      /* The awakening sequence — callable for replay */
+      function runAwakening() {
+        if (isRunning) return;
+        isRunning = true;
+        isAwake   = false;
 
-      /* 0.6s — Signal pulse */
-      setTimeout(function () {
-        pulse.classList.add("pulse-active");
-      }, 600);
+        dormant();
 
-      /* 1.6s — Identity emerges (slow fade in) */
-      setTimeout(function () {
-        heroLine.style.transition = "opacity 900ms ease";
-        heroLine.style.opacity    = "1";
-      }, 1600);
+        /* 0.8s — Signal pulse */
+        setTimeout(function () {
+          pulse.classList.add("pulse-active");
+        }, 800);
 
-      /* 2.8s — Identity fades out cleanly */
-      setTimeout(function () {
-        heroLine.style.transition = "opacity 380ms ease";
-        heroLine.style.opacity    = "0";
-      }, 2800);
+        /* 2.6s — Identity emerges, slow and deliberate */
+        setTimeout(function () {
+          hero.style.transition = "opacity 1200ms ease";
+          hero.style.opacity    = "1";
+        }, 2600);
 
-      /* 3.2s — Identity fully gone, state switch appears */
-      setTimeout(function () {
-        stateSw.classList.add("state-switch-visible");
-      }, 3200);
+        /* 6.2s — Dust settles. ONLINE breathes in. */
+        setTimeout(function () {
+          awake();
+        }, 6200);
+      }
 
-      /* 4.8s — State switch complete, identity returns + marker appears */
-      setTimeout(function () {
-        markAwake();
-      }, 4800);
+      /* Double-tap replay on identity line
+         Two taps within 400ms triggers replay.
+         Works on both touch (mobile) and mouse (desktop).
+         No UI hint — for the one who looks closer. */
+      var lastTap = 0;
+
+      function handleDoubleTap() {
+        var now = Date.now();
+        if (now - lastTap < 400 && isAwake) {
+          runAwakening();
+        }
+        lastTap = now;
+      }
+
+      hero.addEventListener("click",      handleDoubleTap);
+      hero.addEventListener("touchstart", handleDoubleTap, { passive: true });
+
+      /* Run on load */
+      runAwakening();
 
     })();
   </script>
