@@ -42,8 +42,7 @@
     }
 
     /* ==============================================
-       MICRO-TEXTURE — pure CSS, no SVG data URI
-       CSS gradient noise — Safari safe, no privacy flags
+       MICRO-TEXTURE — pure CSS, Safari safe
        ============================================== */
     body::before {
       content: "";
@@ -84,12 +83,11 @@
     }
 
     /* ==============================================
-       LAYOUT — Continuous scroll, single composition
-       Page 1 fills the viewport on landing.
-       Page 2 sits just below the fold — reveals on scroll.
+       LAYOUT — Continuous scroll
+       Hero fills the viewport on landing.
+       Access section sits just below the fold.
        ============================================== */
 
-    /* Hero — fills the viewport on landing */
     .page--hero {
       min-height: 100vh;
       min-height: 100dvh;
@@ -102,7 +100,6 @@
       z-index: 1;
     }
 
-    /* Access — natural height, By Invitation Only in upper half, footer well below */
     .page--access {
       display: flex;
       flex-direction: column;
@@ -112,11 +109,14 @@
       padding-bottom: clamp(9rem, 20vh, 14rem);
       position: relative;
       z-index: 1;
+      overflow: hidden; /* contain the glow */
     }
 
     .wrap {
       width: min(86vw, 50ch);
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
 
     /* ==============================================
@@ -152,7 +152,6 @@
       color: var(--text-strong);
       opacity: 0;
       cursor: default;
-      /* pointer-events managed by JS for double-tap replay */
     }
 
     /* Micro state marker — hidden until awake */
@@ -189,7 +188,7 @@
       color: var(--text-muted);
     }
 
-    /* Breathing pulse — resting human rhythm, ~4s cycle */
+    /* Breathing pulse — resting human rhythm ~4s */
     @keyframes breathe {
       0%, 100% { opacity: 0.3;  box-shadow: 0 0 3px rgba(74, 101, 128, 0.25); }
       50%       { opacity: 1.0; box-shadow: 0 0 9px rgba(74, 101, 128, 0.7);  }
@@ -207,7 +206,35 @@
        PAGE 2 — ACCESS GATE
        ============================================== */
 
-    /* By Invitation Only — authoritative, subordinate to identity */
+    /* Soft Dawn Glow — CP's concept
+       Radial glow behind By Invitation Only.
+       Triggered by IntersectionObserver on scroll.
+       Appears once. Stays. Never loops.
+       ============================================== */
+    .dawn-glow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        ellipse 70% 55% at 50% 38%,
+        rgba(100, 140, 175, 0.09) 0%,
+        rgba(74, 101, 128, 0.05) 45%,
+        transparent 75%
+      );
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 2800ms ease;
+    }
+
+    .dawn-glow.glow-visible {
+      opacity: 1;
+    }
+
+    /* By Invitation Only */
     .access-label {
       font-family: "Space Grotesk", sans-serif;
       font-size: clamp(1rem, 2.8vw, 1.55rem);
@@ -237,6 +264,7 @@
       font-size: 0.78rem;
       font-weight: 300;
       letter-spacing: 0.06em;
+      z-index: 2;
     }
 
     .site-footer p { margin: 0; }
@@ -266,13 +294,14 @@
   <!-- ============================================
        SECTION 1 — IDENTITY / AWAKENING
        Double-tap the identity line to replay the awakening.
+       For the one who looks closer.
        ============================================ -->
   <section class="page page--hero" id="hero">
 
     <!-- Signal pulse -->
     <div class="signal-pulse" id="signalPulse" aria-hidden="true"></div>
 
-    <!-- Identity — permanent post-awakening -->
+    <!-- Identity -->
     <div class="wrap">
       <h1 class="hero-line" id="heroLine">
         Building sovereign systems for clarity, movement, and intelligent operations.
@@ -294,6 +323,10 @@
        SECTION 2 — ACCESS GATE
        ============================================ -->
   <section class="page page--access" id="access">
+
+    <!-- Soft Dawn Glow — appears on scroll, exists permanently -->
+    <div class="dawn-glow" id="dawnGlow" aria-hidden="true"></div>
+
     <div class="wrap">
       <p class="access-label">By Invitation Only</p>
     </div>
@@ -301,57 +334,59 @@
     <footer class="site-footer" role="contentinfo">
       <p>Built with LLMs &amp; Gerry</p>
     </footer>
+
   </section>
 
   <!-- ============================================
-       AWAKENING SEQUENCE
-       Orchestrated entirely via JS inline style transitions.
-       No sessionStorage — sequence runs on every fresh page load.
-       Scroll-back shows static awake state (no replay on scroll).
+       AWAKENING SEQUENCE + DAWN GLOW TRIGGER
 
-       Timeline:
+       Awakening timeline:
          0.0s  — Dormant. All invisible.
-         0.8s  — Signal pulse fires (1400ms duration)
-         2.6s  — Identity fades in slowly (1200ms)
-         5.0s  — Dust settles. Silence.
-         6.2s  — ONLINE marker breathes into existence (1000ms)
+         0.8s  — Signal pulse fires (2400ms)
+         3.8s  — Identity materializes (3500ms ease — lingers into full opacity)
+         9.8s  — Dust settles. ONLINE breathes in (1200ms).
 
-       Double-tap on identity line replays the full sequence.
+       Double-tap identity line to replay.
        For the one who looks closer.
+
+       Dawn Glow:
+         IntersectionObserver watches access section.
+         On first scroll into view — glow fades in (2800ms).
+         Never repeats. Simply exists.
        ============================================ -->
   <script>
     (function () {
       "use strict";
 
-      var pulse   = document.getElementById("signalPulse");
-      var hero    = document.getElementById("heroLine");
-      var marker  = document.getElementById("stateMarker");
+      /* ---- AWAKENING ---- */
 
-      var isAwake   = false;  /* tracks whether sequence has completed */
-      var isRunning = false;  /* prevents overlapping replays */
+      var pulse  = document.getElementById("signalPulse");
+      var hero   = document.getElementById("heroLine");
+      var marker = document.getElementById("stateMarker");
 
-      /* Reset all elements to dormant state */
+      var isAwake   = false;
+      var isRunning = false;
+
       function dormant() {
         pulse.classList.remove("pulse-active");
-        /* Force reflow so animation can restart */
-        void pulse.offsetWidth;
-        hero.style.transition  = "none";
-        hero.style.opacity     = "0";
+        void pulse.offsetWidth; /* force reflow for animation restart */
+        hero.style.transition   = "none";
+        hero.style.opacity      = "0";
         marker.style.transition = "none";
         marker.style.opacity    = "0";
       }
 
-      /* Final awake state */
       function awake() {
-        hero.style.transition   = "opacity 700ms ease";
+        /* Identity settles — gentle final fade if not already at 1 */
+        hero.style.transition   = "opacity 800ms ease";
         hero.style.opacity      = "1";
-        marker.style.transition = "opacity 1000ms ease";
+        /* ONLINE breathes in */
+        marker.style.transition = "opacity 1200ms ease";
         marker.style.opacity    = "1";
         isAwake   = true;
         isRunning = false;
       }
 
-      /* The awakening sequence — callable for replay */
       function runAwakening() {
         if (isRunning) return;
         isRunning = true;
@@ -364,22 +399,22 @@
           pulse.classList.add("pulse-active");
         }, 800);
 
-        /* 3.8s — darkness holds after pulse, identity materializes very slowly */
+        /* 3.8s — Identity materializes very slowly
+           3500ms ease — starts gentle, lingers into full opacity
+           The eye has time to wonder what is coming */
         setTimeout(function () {
-          hero.style.transition = "opacity 3000ms ease";
+          hero.style.transition = "opacity 3500ms cubic-bezier(0.4, 0, 0.6, 1)";
           hero.style.opacity    = "1";
         }, 3800);
 
-        /* 9.5s — dust settles. ONLINE breathes in. */
+        /* 9.8s — Dust has settled. ONLINE breathes in. */
         setTimeout(function () {
           awake();
-        }, 9500);
+        }, 9800);
       }
 
-      /* Double-tap replay on identity line
-         Two taps within 400ms triggers replay.
-         Works on both touch (mobile) and mouse (desktop).
-         No UI hint — for the one who looks closer. */
+      /* Double-tap replay — two taps within 400ms on identity line
+         Touch (mobile) + click (desktop). No UI hint. */
       var lastTap = 0;
 
       function handleDoubleTap() {
@@ -395,6 +430,34 @@
 
       /* Run on load */
       runAwakening();
+
+      /* ---- SOFT DAWN GLOW ----
+         Watches access section via IntersectionObserver.
+         Fires once on first scroll into view.
+         Glow fades in over 2800ms. Never repeats. */
+
+      var glow   = document.getElementById("dawnGlow");
+      var access = document.getElementById("access");
+      var glowFired = false;
+
+      if ("IntersectionObserver" in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting && !glowFired) {
+              glowFired = true;
+              glow.classList.add("glow-visible");
+              observer.disconnect(); /* one-time only */
+            }
+          });
+        }, {
+          threshold: 0.15 /* fires when 15% of access section is visible */
+        });
+
+        observer.observe(access);
+      } else {
+        /* Fallback for older browsers — glow simply exists */
+        glow.classList.add("glow-visible");
+      }
 
     })();
   </script>
