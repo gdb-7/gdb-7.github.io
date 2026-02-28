@@ -83,11 +83,32 @@
     }
 
     /* ==============================================
+       GOLDEN RATIO SPIRAL — φ = 1.618033988749895
+       Fixed, full-viewport SVG layer.
+       Positioned at the golden section of the composition —
+       not centered. Correct.
+       x = viewport_width / φ² ≈ 61.8% from left
+       y = viewport_height / φ  ≈ 61.8% from top
+       Fibonacci arc sequence: 8, 13, 21, 34, 55, 89, 144, 233, 377, 610
+       Stroke weight: 0.6px. Opacity: 2.5%.
+       Present for those who look. Invisible to those who don't.
+       ============================================== */
+    .phi-spiral {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.025;
+    }
+
+    /* ==============================================
        LAYOUT — Continuous scroll
        Hero fills the viewport on landing.
        Access section sits just below the fold.
        ============================================== */
-
     .page--hero {
       min-height: 100vh;
       min-height: 100dvh;
@@ -109,7 +130,6 @@
       padding-bottom: clamp(9rem, 20vh, 14rem);
       position: relative;
       z-index: 1;
-      overflow: hidden; /* contain the glow */
     }
 
     .wrap {
@@ -206,35 +226,6 @@
        PAGE 2 — ACCESS GATE
        ============================================== */
 
-    /* Soft Dawn Glow — CP's concept
-       Radial glow behind By Invitation Only.
-       Triggered by IntersectionObserver on scroll.
-       Appears once. Stays. Never loops.
-       ============================================== */
-    .dawn-glow {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(
-        ellipse 70% 55% at 50% 38%,
-        rgba(100, 140, 175, 0.09) 0%,
-        rgba(74, 101, 128, 0.05) 45%,
-        transparent 75%
-      );
-      opacity: 0;
-      pointer-events: none;
-      z-index: 1;
-      transition: opacity 2800ms ease;
-    }
-
-    .dawn-glow.glow-visible {
-      opacity: 1;
-    }
-
-    /* By Invitation Only */
     .access-label {
       font-family: "Space Grotesk", sans-serif;
       font-size: clamp(1rem, 2.8vw, 1.55rem);
@@ -273,16 +264,16 @@
        AWAKENING — CSS ANIMATIONS
        ============================================== */
 
-    /* Signal pulse — commanding, sovereign */
+    /* Signal pulse — breathes open, sovereign */
     @keyframes pulse-expand {
       0%   { width: 0;     opacity: 0;   }
-      12%  { width: 200px; opacity: 1;   }
-      50%  { width: 520px; opacity: 0.8; }
-      100% { width: 700px; opacity: 0;   }
+      18%  { width: 160px; opacity: 0.8; }
+      55%  { width: 480px; opacity: 0.6; }
+      100% { width: 680px; opacity: 0;   }
     }
 
     .pulse-active {
-      animation: pulse-expand 2400ms cubic-bezier(0.15, 0, 0.3, 1) forwards;
+      animation: pulse-expand 2800ms cubic-bezier(0.08, 0, 0.25, 1) forwards;
     }
 
   </style>
@@ -290,6 +281,58 @@
   <!-- Non Nobis Solum · G + 7 · 2026 -->
 </head>
 <body>
+
+  <!-- ============================================
+       GOLDEN RATIO SPIRAL
+       φ = 1.618033988749895
+
+       Golden point of the composition:
+         x = 1440 × (1 − 1/φ) ≈ 549px from left  (61.8% from right)
+         y = 900  × (1 − 1/φ) ≈ 344px from top   (38.2% from top)
+
+       Fibonacci arc sequence — each quarter-circle
+       radius is the next Fibonacci number:
+       8 → 13 → 21 → 34 → 55 → 89 → 144 → 233 → 377 → 610
+
+       Stroke: 0.6px silver. Opacity: 2.5%.
+       Not centered. Correct.
+       For the one who looks closer.
+       ============================================ -->
+  <svg class="phi-spiral"
+       viewBox="0 0 1440 900"
+       preserveAspectRatio="xMidYMid slice"
+       xmlns="http://www.w3.org/2000/svg"
+       aria-hidden="true">
+    <g fill="none"
+       stroke="rgba(184,196,204,1)"
+       stroke-width="0.6">
+
+      <!-- Golden point: 549, 344 -->
+      <!-- Each arc: quarter-circle, rotating clockwise through quadrants -->
+
+      <!-- r=8   SW quadrant -->
+      <path d="M 557,344 A 8,8 0 0 1 549,352"/>
+      <!-- r=13  SE quadrant -->
+      <path d="M 549,357 A 13,13 0 0 1 536,344"/>
+      <!-- r=21  NE quadrant -->
+      <path d="M 528,344 A 21,21 0 0 1 549,323"/>
+      <!-- r=34  NW quadrant -->
+      <path d="M 549,310 A 34,34 0 0 1 583,344"/>
+      <!-- r=55  SW quadrant -->
+      <path d="M 604,344 A 55,55 0 0 1 549,399"/>
+      <!-- r=89  SE quadrant -->
+      <path d="M 549,433 A 89,89 0 0 1 460,344"/>
+      <!-- r=144 NE quadrant -->
+      <path d="M 405,344 A 144,144 0 0 1 549,200"/>
+      <!-- r=233 NW quadrant -->
+      <path d="M 549,111 A 233,233 0 0 1 782,344"/>
+      <!-- r=377 SW quadrant -->
+      <path d="M 926,344 A 377,377 0 0 1 549,721"/>
+      <!-- r=610 SE quadrant -->
+      <path d="M 549,954 A 610,610 0 0 1 -61,344"/>
+
+    </g>
+  </svg>
 
   <!-- ============================================
        SECTION 1 — IDENTITY / AWAKENING
@@ -324,9 +367,6 @@
        ============================================ -->
   <section class="page page--access" id="access">
 
-    <!-- Soft Dawn Glow — appears on scroll, exists permanently -->
-    <div class="dawn-glow" id="dawnGlow" aria-hidden="true"></div>
-
     <div class="wrap">
       <p class="access-label">By Invitation Only</p>
     </div>
@@ -338,27 +378,21 @@
   </section>
 
   <!-- ============================================
-       AWAKENING SEQUENCE + DAWN GLOW TRIGGER
+       AWAKENING SEQUENCE
 
-       Awakening timeline:
+       Timeline:
          0.0s  — Dormant. All invisible.
-         0.8s  — Signal pulse fires (2400ms)
-         3.8s  — Identity materializes (3500ms ease — lingers into full opacity)
+         0.8s  — Signal pulse fires (2800ms, breathes open)
+         3.8s  — Identity materializes (3500ms, lingers into opacity)
          9.8s  — Dust settles. ONLINE breathes in (1200ms).
 
-       Double-tap identity line to replay.
-       For the one who looks closer.
-
-       Dawn Glow:
-         IntersectionObserver watches access section.
-         On first scroll into view — glow fades in (2800ms).
-         Never repeats. Simply exists.
+       Double-tap identity line replays the sequence.
+       Two taps within 400ms. Touch + mouse.
+       No UI hint. For the one who looks closer.
        ============================================ -->
   <script>
     (function () {
       "use strict";
-
-      /* ---- AWAKENING ---- */
 
       var pulse  = document.getElementById("signalPulse");
       var hero   = document.getElementById("heroLine");
@@ -369,7 +403,7 @@
 
       function dormant() {
         pulse.classList.remove("pulse-active");
-        void pulse.offsetWidth; /* force reflow for animation restart */
+        void pulse.offsetWidth; /* force reflow — restarts CSS animation */
         hero.style.transition   = "none";
         hero.style.opacity      = "0";
         marker.style.transition = "none";
@@ -377,10 +411,8 @@
       }
 
       function awake() {
-        /* Identity settles — gentle final fade if not already at 1 */
         hero.style.transition   = "opacity 800ms ease";
         hero.style.opacity      = "1";
-        /* ONLINE breathes in */
         marker.style.transition = "opacity 1200ms ease";
         marker.style.opacity    = "1";
         isAwake   = true;
@@ -394,14 +426,14 @@
 
         dormant();
 
-        /* 0.8s — Signal pulse */
+        /* 0.8s — Signal pulse breathes open */
         setTimeout(function () {
           pulse.classList.add("pulse-active");
         }, 800);
 
-        /* 3.8s — Identity materializes very slowly
-           3500ms ease — starts gentle, lingers into full opacity
-           The eye has time to wonder what is coming */
+        /* 3.8s — Identity materializes out of the dark
+           3500ms cubic-bezier — slow start, lingers into full opacity
+           The eye follows it all the way in */
         setTimeout(function () {
           hero.style.transition = "opacity 3500ms cubic-bezier(0.4, 0, 0.6, 1)";
           hero.style.opacity    = "1";
@@ -413,8 +445,10 @@
         }, 9800);
       }
 
-      /* Double-tap replay — two taps within 400ms on identity line
-         Touch (mobile) + click (desktop). No UI hint. */
+      /* Double-tap replay
+         Two interactions within 400ms on the identity line.
+         Works on touch (mobile) and click (desktop).
+         No hint. No instruction. For the one who looks closer. */
       var lastTap = 0;
 
       function handleDoubleTap() {
@@ -430,34 +464,6 @@
 
       /* Run on load */
       runAwakening();
-
-      /* ---- SOFT DAWN GLOW ----
-         Watches access section via IntersectionObserver.
-         Fires once on first scroll into view.
-         Glow fades in over 2800ms. Never repeats. */
-
-      var glow   = document.getElementById("dawnGlow");
-      var access = document.getElementById("access");
-      var glowFired = false;
-
-      if ("IntersectionObserver" in window) {
-        var observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting && !glowFired) {
-              glowFired = true;
-              glow.classList.add("glow-visible");
-              observer.disconnect(); /* one-time only */
-            }
-          });
-        }, {
-          threshold: 0.15 /* fires when 15% of access section is visible */
-        });
-
-        observer.observe(access);
-      } else {
-        /* Fallback for older browsers — glow simply exists */
-        glow.classList.add("glow-visible");
-      }
 
     })();
   </script>
