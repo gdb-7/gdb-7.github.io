@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="googlebot" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>G. De Beer</title>
 
@@ -284,11 +286,65 @@
       animation: pulse-expand 3200ms cubic-bezier(0.05, 0, 0.2, 1) forwards;
     }
 
-  </style>
 
+
+    /* ==============================================
+       MOBILE BLOCK — same as USS Aurora
+       ============================================== */
+    #mobile-block {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #0a0a0a;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 40px;
+    }
+
+    #mobile-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 80%;
+      max-width: 520px;
+    }
+
+    #mobile-phrase {
+      font-family: 'Courier New', Courier, monospace;
+      color: #00ff41;
+      text-shadow: 0 0 6px #00ff41;
+      font-size: 1em;
+      line-height: 1.7;
+    }
+
+    .mobile-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.1em;
+      background: #00ff41;
+      animation: mobile-blink 1s infinite;
+      margin-top: 2px;
+      box-shadow: 0 0 8px #00ff41;
+    }
+
+    @keyframes mobile-blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+  </style>
   <!-- Non Nobis Solum · G + 7 · 2026 -->
 </head>
 <body>
+
+  <!-- MOBILE BLOCK — USS Aurora register -->
+  <div id="mobile-block">
+    <div id="mobile-inner">
+      <div id="mobile-phrase"></div>
+      <span class="mobile-cursor" id="mobile-cursor" style="display:none;"></span>
+    </div>
+  </div>
 
   <!-- ============================================
        GOLDEN RATIO SPIRAL
@@ -384,6 +440,50 @@
     </footer>
 
   </section>
+
+  <script>
+    // SECURITY
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && ['u','s','i','a','c'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    });
+
+    // MOBILE BLOCK — same sequence as USS Aurora
+    (function() {
+      var isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        var block = document.getElementById('mobile-block');
+        block.style.display = 'flex';
+
+        var mobileLines = [
+          '> BOOTING...',
+          '> SIGNAL RECEIVED.',
+          '> INITIATING SUBSPACE TRANSMISSION TO THE USS AURORA.'
+        ];
+        var target = document.getElementById('mobile-phrase');
+        var mobileCursor = document.getElementById('mobile-cursor');
+        var mobileDelays = [0, 1600, 2400];
+
+        function dumpMobile(i) {
+          if (i < mobileLines.length) {
+            setTimeout(function() {
+              var line = document.createElement('div');
+              line.textContent = mobileLines[i];
+              target.appendChild(line);
+              dumpMobile(i + 1);
+            }, i === 0 ? 0 : mobileDelays[i]);
+          } else {
+            setTimeout(function() {
+              mobileCursor.style.display = 'inline-block';
+            }, 600);
+          }
+        }
+        setTimeout(function() { dumpMobile(0); }, 1400);
+      }
+    })();
+  </script>
 
   <!-- ============================================
        AWAKENING SEQUENCE
