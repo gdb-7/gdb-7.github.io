@@ -491,8 +491,8 @@
        Timeline:
          0.0s  — Dormant. All invisible.
          0.8s  — Signal pulse fires (2800ms, breathes open)
-         3.8s  — Identity materializes (3500ms, lingers into opacity)
-         9.8s  — Dust settles. ONLINE breathes in (1200ms).
+         5.3s  — Identity materializes (3500ms, lingers into opacity)
+         11.3s — Dust settles. ONLINE breathes in (1200ms).
 
        Double-tap identity line replays the sequence.
        Two taps within 400ms. Touch + mouse.
@@ -539,18 +539,18 @@
           pulse.classList.add("pulse-active");
         }, 800);
 
-        /* 3.8s — Identity materializes out of the dark
+        /* 5.3s — Identity materializes out of the dark
            3500ms cubic-bezier — slow start, lingers into full opacity
            The eye follows it all the way in */
         setTimeout(function () {
           hero.style.transition = "opacity 3500ms cubic-bezier(0.4, 0, 0.6, 1)";
           hero.style.opacity    = "1";
-        }, 3800);
+        }, 5300);
 
-        /* 9.8s — Dust has settled. ONLINE breathes in. */
+        /* 11.3s — Dust has settled. ONLINE breathes in. */
         setTimeout(function () {
           awake();
-        }, 9800);
+        }, 11300);
       }
 
       /* Double-tap replay
