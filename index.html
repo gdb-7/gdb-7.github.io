@@ -526,21 +526,24 @@
         }
 
         // orientationchange — iOS-reliable since version 1
+        // setTimeout 100ms: iOS doesn't update innerWidth/innerHeight until after the event fires
         window.addEventListener('orientationchange', function() {
           clearAll();
+          setTimeout(function() {
+            if (isPortrait()) {
+              startSequence();
+            }
+            // else: silent #0a0a0a void — overlay stays, content empty
+          }, 100);
+        });
+
+        // Initial state — defer 100ms so iOS settles dimensions before we read
+        setTimeout(function() {
           if (isPortrait()) {
             startSequence();
           }
-          // else: silent #0a0a0a void — overlay stays, content empty
-        });
-
-        // Initial state — early return on landscape
-        if (!isPortrait()) {
-          return;
-        }
-
-        // Portrait on landing — run sequence
-        startSequence();
+          // else: silent #0a0a0a void on landing in landscape
+        }, 100);
       }
     })();
   </script>
