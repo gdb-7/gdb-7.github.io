@@ -449,37 +449,92 @@
       }
     });
 
-    // MOBILE BLOCK — same sequence as USS Aurora
+    // DEVICE GATE — Tablet (silent void) · Mobile (orientation-aware) · Desktop (fall-through)
+    // One overlay (#mobile-block · #0a0a0a), three modes.
     (function() {
-      var isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (isMobile) {
-        var block = document.getElementById('mobile-block');
+      var ua    = navigator.userAgent;
+      var touch = navigator.maxTouchPoints || 0;
+
+      // Tablet: explicit iPad, modern iPad (reports as Mac + touch), or large touch screen
+      var isTablet = /iPad/.test(ua)
+                  || (/Macintosh/.test(ua) && touch > 1)
+                  || (touch > 1 && window.innerWidth >= 768);
+
+      // Mobile: phone-class only — tablet check runs first, so iPad excluded here
+      var isMobile = !isTablet
+                  && /Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+
+      var block        = document.getElementById('mobile-block');
+      var target       = document.getElementById('mobile-phrase');
+      var mobileCursor = document.getElementById('mobile-cursor');
+
+      // TABLET — silent #0a0a0a void · awakening blocked · return
+      if (isTablet) {
         block.style.display = 'flex';
+        window.__skipAwakening = true;
+        return;
+      }
 
-        var mobileLines = [
-          '> BOOTING...',
-          '> SIGNAL RECEIVED.',
-          '> INITIATING SUBSPACE TRANSMISSION TO THE USS AURORA.'
-        ];
-        var target = document.getElementById('mobile-phrase');
-        var mobileCursor = document.getElementById('mobile-cursor');
-        var mobileDelays = [0, 800, 1600];
+      // MOBILE — orientation-aware · awakening blocked
+      if (isMobile) {
+        block.style.display = 'flex';
+        window.__skipAwakening = true;
 
-        function dumpMobile(i) {
-          if (i < mobileLines.length) {
-            setTimeout(function() {
-              var line = document.createElement('div');
-              line.textContent = mobileLines[i];
-              target.appendChild(line);
-              dumpMobile(i + 1);
-            }, i === 0 ? 0 : mobileDelays[i]);
-          } else {
-            setTimeout(function() {
-              mobileCursor.style.display = 'inline-block';
-            }, 600);
-          }
+        var pendingTimeouts = [];
+
+        function clearAll() {
+          pendingTimeouts.forEach(function(id) { clearTimeout(id); });
+          pendingTimeouts = [];
+          while (target.firstChild) { target.removeChild(target.firstChild); }
+          mobileCursor.style.display = 'none';
         }
-        setTimeout(function() { dumpMobile(0); }, 1400);
+
+        function startSequence() {
+          var mobileLines = [
+            '> BOOTING...',
+            '> SIGNAL RECEIVED.',
+            '> INITIATING SUBSPACE TRANSMISSION TO THE USS AURORA.'
+          ];
+          var mobileDelays = [0, 800, 1600];
+
+          function dumpMobile(i) {
+            if (i < mobileLines.length) {
+              var t = setTimeout(function() {
+                var line = document.createElement('div');
+                line.textContent = mobileLines[i];
+                target.appendChild(line);
+                dumpMobile(i + 1);
+              }, i === 0 ? 0 : mobileDelays[i]);
+              pendingTimeouts.push(t);
+            } else {
+              var t = setTimeout(function() {
+                mobileCursor.style.display = 'inline-block';
+              }, 600);
+              pendingTimeouts.push(t);
+            }
+          }
+
+          var t0 = setTimeout(function() { dumpMobile(0); }, 1400);
+          pendingTimeouts.push(t0);
+        }
+
+        var portraitMQ = window.matchMedia('(orientation: portrait)');
+
+        function handleOrientation() {
+          clearAll();
+          if (portraitMQ.matches) {
+            startSequence();
+          }
+          // landscape: overlay stays visible, content empty — silent #0a0a0a void
+        }
+
+        // Initial state
+        if (portraitMQ.matches) {
+          startSequence();
+        }
+        // else: overlay shown, empty — silent void on landing in landscape
+
+        portraitMQ.addEventListener('change', handleOrientation);
       }
     })();
   </script>
@@ -500,6 +555,9 @@
   <script>
     (function () {
       "use strict";
+
+      // Skip on tablet/mobile — overlay covers the awakening
+      if (window.__skipAwakening) return;
 
       var pulse  = document.getElementById("signalPulse");
       var hero   = document.getElementById("heroLine");
