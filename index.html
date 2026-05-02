@@ -491,9 +491,9 @@
           mobileCursor.style.display = 'none';
         }
 
-        // Fresh matchMedia call each read — iOS Safari requires this
+        // Dimension check — reliable on iOS Safari at any execution timing
         function isPortrait() {
-          return window.matchMedia('(orientation: portrait)').matches;
+          return window.innerHeight > window.innerWidth;
         }
 
         function startSequence() {
@@ -525,19 +525,16 @@
           pendingTimeouts.push(t0);
         }
 
-        // Listener attached FIRST — uses e.matches from event, not stored MQL
-        window.matchMedia('(orientation: portrait)').addEventListener('change', function(e) {
-          if (!e.matches) {
-            // Rotated to landscape — kill everything · silent #0a0a0a void
-            clearAll();
-          } else {
-            // Rotated back to portrait — restart from beginning
-            clearAll();
+        // orientationchange — iOS-reliable since version 1
+        window.addEventListener('orientationchange', function() {
+          clearAll();
+          if (isPortrait()) {
             startSequence();
           }
+          // else: silent #0a0a0a void — overlay stays, content empty
         });
 
-        // Initial state — early return on landscape (echt.blue pattern)
+        // Initial state — early return on landscape
         if (!isPortrait()) {
           return;
         }
