@@ -456,9 +456,11 @@
       var touch = navigator.maxTouchPoints || 0;
 
       // Tablet: explicit iPad, modern iPad (reports as Mac + touch), or large touch screen
+      // (large touch screen excludes iPhones — they keep mobile branch even in landscape)
       var isTablet = /iPad/.test(ua)
                   || (/Macintosh/.test(ua) && touch > 1)
-                  || (touch > 1 && window.innerWidth >= 768);
+                  || (touch > 1 && window.innerWidth >= 768
+                      && !/iPhone|iPod|BlackBerry|Opera Mini/i.test(ua));
 
       // Mobile: phone-class only — tablet check runs first, so iPad excluded here
       var isMobile = !isTablet
@@ -487,6 +489,11 @@
           pendingTimeouts = [];
           while (target.firstChild) { target.removeChild(target.firstChild); }
           mobileCursor.style.display = 'none';
+        }
+
+        // Fresh matchMedia call each read — iOS Safari requires this
+        function isPortrait() {
+          return window.matchMedia('(orientation: portrait)').matches;
         }
 
         function startSequence() {
@@ -518,23 +525,25 @@
           pendingTimeouts.push(t0);
         }
 
-        var portraitMQ = window.matchMedia('(orientation: portrait)');
-
-        function handleOrientation() {
-          clearAll();
-          if (portraitMQ.matches) {
+        // Listener attached FIRST — uses e.matches from event, not stored MQL
+        window.matchMedia('(orientation: portrait)').addEventListener('change', function(e) {
+          if (!e.matches) {
+            // Rotated to landscape — kill everything · silent #0a0a0a void
+            clearAll();
+          } else {
+            // Rotated back to portrait — restart from beginning
+            clearAll();
             startSequence();
           }
-          // landscape: overlay stays visible, content empty — silent #0a0a0a void
+        });
+
+        // Initial state — early return on landscape (echt.blue pattern)
+        if (!isPortrait()) {
+          return;
         }
 
-        // Initial state
-        if (portraitMQ.matches) {
-          startSequence();
-        }
-        // else: overlay shown, empty — silent void on landing in landscape
-
-        portraitMQ.addEventListener('change', handleOrientation);
+        // Portrait on landing — run sequence
+        startSequence();
       }
     })();
   </script>
