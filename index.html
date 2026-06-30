@@ -7,12 +7,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>G. De Beer</title>
 
-  <!-- Fonts: Cormorant Garamond (identity) + Space Grotesk (UI) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Fonts: Cormorant Garamond (identity) + Space Grotesk (UI) — self-hosted at repo root, no external request -->
 
   <style>
+    /* ==============================================
+       SELF-HOSTED FONTS — served from /fonts, no Google request
+       ============================================== */
+    @font-face {
+      font-display: swap;
+      font-family: 'Cormorant Garamond';
+      font-style: normal;
+      font-weight: 500;
+      src: url('cormorant-garamond-v21-latin-500.woff2') format('woff2');
+    }
+    @font-face {
+      font-display: swap;
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 300;
+      src: url('space-grotesk-v22-latin-300.woff2') format('woff2');
+    }
+    @font-face {
+      font-display: swap;
+      font-family: 'Space Grotesk';
+      font-style: normal;
+      font-weight: 400;
+      src: url('space-grotesk-v22-latin-regular.woff2') format('woff2');
+    }
+
     /* ==============================================
        ROOT — Palette, Scale, Spacing
        ============================================== */
