@@ -114,8 +114,10 @@
        x = viewport_width / φ² ≈ 61.8% from left
        y = viewport_height / φ  ≈ 61.8% from top
        Fibonacci arc sequence: 8, 13, 21, 34, 55, 89, 144, 233, 377, 610
-       Stroke weight: 0.6px. Opacity: 2.5%.
-       Present for those who look. Invisible to those who don't.
+       Stroke 0.9px at the eye tapering to 0.6px, round ends. Opacity: 8%.
+       ★ 29 Oct, the Captain: "beef up the spiral a bit", similar to echt.blue,
+         whose spiral settles at 8% after it draws. Was 2.5% and an even 0.6px.
+         The colour stays silver: gold is echt.blue's, on azure.
        ============================================== */
     .phi-spiral {
       position: fixed;
@@ -125,7 +127,13 @@
       height: 100%;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.025;
+      opacity: 0.08;
+    }
+
+    /* ★ 29 Oct, the Captain: the newer Macs' screens perform like an iPhone's, so a
+       display that reports high dynamic range gets the phone's 5%. 8% stays for the rest. */
+    @media (dynamic-range: high) {
+      .phi-spiral { opacity: 0.05; }
     }
 
     /* ==============================================
@@ -273,26 +281,6 @@
       }
     }
 
-    /* Footer — generous breathing room beneath */
-    .site-footer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: clamp(3.5rem, 8vh, 5rem);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.78rem;
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      z-index: 2;
-    }
-
-    .site-footer p {
-      margin: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
     /* ==============================================
        AWAKENING — CSS ANIMATIONS
        ============================================== */
@@ -312,61 +300,35 @@
 
 
     /* ==============================================
-       MOBILE BLOCK — same as USS Aurora
+       HANDHELD — phones and tablets, 29 October
+       The hero alone: navy, the spiral, the Latin line, one still screen.
+       Replaces the USS Aurora's green terminal, which named another property
+       on this one. Nothing scrolls; the access line stays on the desktop.
+       The line sits a little below the middle, on purpose (the Captain liked it).
        ============================================== */
-    #mobile-block {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: #0a0a0a;
-      align-items: flex-start;
-      z-index: 9999;
-      padding: 38vh 40px 0 40px;
+    html.handheld, html.handheld body { height: 100%; overflow: hidden; }
+    html.handheld .page--access,
+    html.handheld .state-marker { display: none; }
+    /* ★ 29 Oct, the Captain: 8% is too much on a phone's OLED; 5% on handhelds. */
+    html.handheld .phi-spiral { opacity: 0.05; }
+    html.handheld .page--hero {
+      min-height: 0;
+      height: 100%;
+      padding-top: 12vh;
+      padding-bottom: 0;
     }
-
-    #mobile-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 80%;
-      max-width: 520px;
-    }
-
-    #mobile-phrase {
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ff41;
-      text-shadow: 0 0 6px #00ff41;
-      font-size: 1em;
-      line-height: 1.7;
-    }
-
-    .mobile-cursor {
-      display: inline-block;
-      width: 10px;
-      height: 1.1em;
-      background: #00ff41;
-      animation: mobile-blink 1s infinite;
-      margin-top: 2px;
-      box-shadow: 0 0 8px #00ff41;
-    }
-
-    @keyframes mobile-blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
+    html.handheld .pulse-active { animation-name: pulse-expand-handheld; }
+    @keyframes pulse-expand-handheld {
+      0%   { width: 0;     opacity: 0;   }
+      25%  { width: 22vw;  opacity: 0.6; }
+      60%  { width: 70vw;  opacity: 0.5; }
+      100% { width: 100vw; opacity: 0;   }
     }
 
   </style>
   <!-- Non Nobis Solum · G + 7 · 2026 -->
 </head>
 <body>
-
-  <!-- MOBILE BLOCK — USS Aurora register -->
-  <div id="mobile-block">
-    <div id="mobile-inner">
-      <div id="mobile-phrase"></div>
-      <span class="mobile-cursor" id="mobile-cursor" style="display:none;"></span>
-    </div>
-  </div>
 
   <!-- ============================================
        GOLDEN RATIO SPIRAL
@@ -380,7 +342,7 @@
        radius is the next Fibonacci number:
        8 → 13 → 21 → 34 → 55 → 89 → 144 → 233 → 377 → 610
 
-       Stroke: 0.6px silver. Opacity: 2.5%.
+       Stroke: 0.9px tapering to 0.6px, silver, round ends. Opacity: 8%.
        Not centered. Correct.
        For the one who looks closer.
        ============================================ -->
@@ -391,25 +353,26 @@
        aria-hidden="true">
     <g fill="none"
        stroke="rgba(184,196,204,1)"
-       stroke-width="0.6">
+       stroke-width="0.6"
+       stroke-linecap="round">
 
       <!-- Golden point: 549, 344 -->
       <!-- Each arc: quarter-circle, rotating clockwise through quadrants -->
 
       <!-- r=8   SW quadrant -->
-      <path d="M 557,344 A 8,8 0 0 1 549,352"/>
+      <path d="M 557,344 A 8,8 0 0 1 549,352" stroke-width="0.9"/>
       <!-- r=13  SE quadrant -->
-      <path d="M 549,357 A 13,13 0 0 1 536,344"/>
+      <path d="M 549,357 A 13,13 0 0 1 536,344" stroke-width="0.9"/>
       <!-- r=21  NE quadrant -->
-      <path d="M 528,344 A 21,21 0 0 1 549,323"/>
+      <path d="M 528,344 A 21,21 0 0 1 549,323" stroke-width="0.9"/>
       <!-- r=34  NW quadrant -->
-      <path d="M 549,310 A 34,34 0 0 1 583,344"/>
+      <path d="M 549,310 A 34,34 0 0 1 583,344" stroke-width="0.8"/>
       <!-- r=55  SW quadrant -->
-      <path d="M 604,344 A 55,55 0 0 1 549,399"/>
+      <path d="M 604,344 A 55,55 0 0 1 549,399" stroke-width="0.8"/>
       <!-- r=89  SE quadrant -->
-      <path d="M 549,433 A 89,89 0 0 1 460,344"/>
+      <path d="M 549,433 A 89,89 0 0 1 460,344" stroke-width="0.7"/>
       <!-- r=144 NE quadrant -->
-      <path d="M 405,344 A 144,144 0 0 1 549,200"/>
+      <path d="M 405,344 A 144,144 0 0 1 549,200" stroke-width="0.7"/>
       <!-- r=233 NW quadrant -->
       <path d="M 549,111 A 233,233 0 0 1 782,344"/>
       <!-- r=377 SW quadrant -->
@@ -457,10 +420,6 @@
       <p class="access-label">By Invitation Only</p>
     </div>
 
-    <footer class="site-footer" role="contentinfo">
-      <p>Built with LLMs &amp; Gerry</p>
-    </footer>
-
   </section>
 
   <script>
@@ -472,102 +431,36 @@
       }
     });
 
-    // DEVICE GATE — Tablet (silent void) · Mobile (orientation-aware) · Desktop (fall-through)
-    // One overlay (#mobile-block · #0a0a0a), three modes.
+    // DEVICE GATE — 29 October: phones and tablets get the hero alone (see HANDHELD).
+    // The class is set before the awakening script runs, which reads it.
     (function() {
       var ua    = navigator.userAgent;
       var touch = navigator.maxTouchPoints || 0;
 
       // Tablet: explicit iPad, modern iPad (reports as Mac + touch), or large touch screen
-      // (large touch screen excludes iPhones — they keep mobile branch even in landscape)
       var isTablet = /iPad/.test(ua)
                   || (/Macintosh/.test(ua) && touch > 1)
                   || (touch > 1 && window.innerWidth >= 768
                       && !/iPhone|iPod|BlackBerry|Opera Mini/i.test(ua));
-
-      // Mobile: phone-class only — tablet check runs first, so iPad excluded here
       var isMobile = !isTablet
                   && /Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      if (!isTablet && !isMobile) return;
 
-      var block        = document.getElementById('mobile-block');
-      var target       = document.getElementById('mobile-phrase');
-      var mobileCursor = document.getElementById('mobile-cursor');
+      document.documentElement.classList.add('handheld');
+      window.__handheld = true;
 
-      // TABLET — silent #0a0a0a void · awakening blocked · return
-      if (isTablet) {
-        block.style.display = 'flex';
-        window.__skipAwakening = true;
-        return;
+      // The spiral's eye moves to the golden section of the handheld screen:
+      // 38.2% from the left and from the top, as on the desktop composition.
+      var svg = document.querySelector('.phi-spiral');
+      var EYE_X = 549, EYE_Y = 344, CUT = 1 - 1 / 1.618033988749895;
+      function frame() {
+        var w = window.innerWidth, h = window.innerHeight, vbH = 900, vbW = vbH * w / h;
+        svg.setAttribute('viewBox', (EYE_X - CUT * vbW).toFixed(1) + ' ' + (EYE_Y - CUT * vbH).toFixed(1)
+                                    + ' ' + vbW.toFixed(1) + ' ' + vbH);
       }
-
-      // MOBILE — orientation-aware · awakening blocked
-      if (isMobile) {
-        block.style.display = 'flex';
-        window.__skipAwakening = true;
-
-        var pendingTimeouts = [];
-
-        function clearAll() {
-          pendingTimeouts.forEach(function(id) { clearTimeout(id); });
-          pendingTimeouts = [];
-          while (target.firstChild) { target.removeChild(target.firstChild); }
-          mobileCursor.style.display = 'none';
-        }
-
-        // Dimension check — reliable on iOS Safari at any execution timing
-        function isPortrait() {
-          return window.innerHeight > window.innerWidth;
-        }
-
-        function startSequence() {
-          var mobileLines = [
-            '> BOOTING...',
-            '> SIGNAL RECEIVED.',
-            '> INITIATING SUBSPACE TRANSMISSION TO THE USS AURORA.'
-          ];
-          var mobileDelays = [0, 800, 1600];
-
-          function dumpMobile(i) {
-            if (i < mobileLines.length) {
-              var t = setTimeout(function() {
-                var line = document.createElement('div');
-                line.textContent = mobileLines[i];
-                target.appendChild(line);
-                dumpMobile(i + 1);
-              }, i === 0 ? 0 : mobileDelays[i]);
-              pendingTimeouts.push(t);
-            } else {
-              var t = setTimeout(function() {
-                mobileCursor.style.display = 'inline-block';
-              }, 600);
-              pendingTimeouts.push(t);
-            }
-          }
-
-          var t0 = setTimeout(function() { dumpMobile(0); }, 1400);
-          pendingTimeouts.push(t0);
-        }
-
-        // orientationchange — iOS-reliable since version 1
-        // setTimeout 100ms: iOS doesn't update innerWidth/innerHeight until after the event fires
-        window.addEventListener('orientationchange', function() {
-          clearAll();
-          setTimeout(function() {
-            if (isPortrait()) {
-              startSequence();
-            }
-            // else: silent #0a0a0a void — overlay stays, content empty
-          }, 100);
-        });
-
-        // Initial state — defer 100ms so iOS settles dimensions before we read
-        setTimeout(function() {
-          if (isPortrait()) {
-            startSequence();
-          }
-          // else: silent #0a0a0a void on landing in landscape
-        }, 100);
-      }
+      frame();
+      window.addEventListener('resize', frame);
+      window.addEventListener('orientationchange', function() { setTimeout(frame, 120); });
     })();
   </script>
 
@@ -588,8 +481,8 @@
     (function () {
       "use strict";
 
-      // Skip on tablet/mobile — overlay covers the awakening
-      if (window.__skipAwakening) return;
+      // On a phone or tablet the same awakening runs, shorter, without ONLINE.
+      var handheld = !!window.__handheld;
 
       var pulse  = document.getElementById("signalPulse");
       var hero   = document.getElementById("heroLine");
@@ -634,7 +527,7 @@
         setTimeout(function () {
           hero.style.transition = "opacity 3500ms cubic-bezier(0.4, 0, 0.6, 1)";
           hero.style.opacity    = "1";
-        }, 5300);
+        }, handheld ? 3600 : 5300);
 
         /* 11.3s — Dust has settled. ONLINE breathes in. */
         setTimeout(function () {
