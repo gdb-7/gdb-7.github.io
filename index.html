@@ -187,7 +187,7 @@
       background: linear-gradient(
         to right,
         transparent,
-        rgba(184, 196, 204, 0.5),
+        rgba(228, 232, 237, 0.9),
         transparent
       );
       opacity: 0;
@@ -286,11 +286,14 @@
        ============================================== */
 
     /* Signal pulse — breathes open, sovereign */
+    /* ★ 29 Oct, the Captain: the line was "barely visible", on the Mac and the phone alike.
+       Brighter (the text colour at 90% at its heart, was silver at 50%) and, on the
+       desktop, longer (900px, was 660px). */
     @keyframes pulse-expand {
       0%   { width: 0;     opacity: 0;   }
-      25%  { width: 120px; opacity: 0.6; }
-      60%  { width: 440px; opacity: 0.5; }
-      100% { width: 660px; opacity: 0;   }
+      25%  { width: 160px; opacity: 0.9; }
+      60%  { width: 600px; opacity: 0.8; }
+      100% { width: 900px; opacity: 0;   }
     }
 
     .pulse-active {
@@ -315,14 +318,18 @@
     html.handheld .page--hero {
       min-height: 0;
       height: 100%;
+      height: 100svh;
       padding-top: 0;
       padding-bottom: 0;
     }
+    /* ★ 29 Oct: 100svh = the height actually visible with the browser's bars showing,
+       so the pulse and the line meet in the middle of what the visitor sees. 100% stays
+       as the fallback for a browser that does not know svh. */
     html.handheld .pulse-active { animation-name: pulse-expand-handheld; }
     @keyframes pulse-expand-handheld {
       0%   { width: 0;     opacity: 0;   }
-      25%  { width: 22vw;  opacity: 0.6; }
-      60%  { width: 70vw;  opacity: 0.5; }
+      25%  { width: 22vw;  opacity: 0.9; }
+      60%  { width: 70vw;  opacity: 0.8; }
       100% { width: 100vw; opacity: 0;   }
     }
 
